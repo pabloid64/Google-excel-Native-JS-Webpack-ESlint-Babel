@@ -1,0 +1,31 @@
+{
+  "name": "prj-excel",
+  "version": "1.0.0",
+  "description": "Pure Javasctipt Excel Application",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pabloid64/excel.git"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "excel"
+  ],
+  "author": "Pavel Chernyshov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pabloid64/excel/issues"
+  },
+  "homepage": "https://github.com/pabloid64/excel#readme",
+  "private": true,
+  "devDependencies": {
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.3.0"
+  }
+}
