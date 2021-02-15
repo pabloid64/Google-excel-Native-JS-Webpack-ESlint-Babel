@@ -6,14 +6,20 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
+const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 
 module.exports = {
     context: path.resolve(__dirname, 'src'), // папка по дефолту с использованием path и системной переменной __dirname
     mode: 'development', // мод разработки по дефолту
-    entry: './index.js', // точка входа
+    entry: ['@babel/polyfill', './index.js'], // точка входа и полифилл для работы на devServere(на Node работало без него)
     output: {          // выходные данные, складываются в папку dist
-        filename: 'bundle.[hash].js', // для того,чтобы сохраненный в браузере hash не подменялся, файл всегда разный.
+        filename: filename('js'), // для того,чтобы сохраненный в браузере hash не подменялся, файл всегда разный.(смотреть переменную filename)
         path: path.resolve(__dirname, 'dist') 
+    },
+    devtool: isDev ? 'source-map' : false, //расширенные карты в инструментах разработчика в браузере
+    devServer: {
+      port: 3000,
+      hot: isDev,
     },
     resolve: {
         extensions: ['.js'], //расширения
@@ -25,7 +31,11 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(), // плагин чистит лишние bundlы
         new HtmlWebpackPlugin({ // плагин для подключения HTML в сборку
-            template: 'index.html' // путь по дефолту scr(можно не указывать), есть еще свойства, это минимальный набор
+            template: 'index.html', // путь по дефолту scr(можно не указывать), есть еще свойства, это минимальный набор
+            minify: {
+              removeComments: isProd, //удаляет комментарии
+              collapseWhitespace: isProd // удаляет пробелы (все в prode)
+            }
         }),
         new CopyPlugin({ //копирует faviconки и т.д.
             patterns: [{ 
@@ -34,7 +44,7 @@ module.exports = {
             }],
           }),
           new MiniCssExtractPlugin({ //плагин подключает сss в сборку
-              filename: 'bundle.[hash].css'
+              filename: filename('css')
           })
 
     ],
