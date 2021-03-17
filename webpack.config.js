@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path'); // export библиотеки path
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -18,8 +19,9 @@ module.exports = {
     },
     devtool: isDev ? 'source-map' : false, //расширенные карты в инструментах разработчика в браузере
     devServer: {
-      port: 3000,
-      hot: isDev,
+      historyApiFallback: true,
+      hot: true,
+      port: 3000
     },
     resolve: {
         extensions: ['.js'], //расширения
@@ -29,6 +31,9 @@ module.exports = {
         }
     },
     plugins: [
+        // new webpack.HotModuleReplacementPlugin({ // работает с --hot в строке запуска
+        //   // Options...
+        // }),
         new CleanWebpackPlugin(), // плагин чистит лишние bundlы
         new HtmlWebpackPlugin({ // плагин для подключения HTML в сборку
             template: 'index.html', // путь по дефолту scr(можно не указывать), есть еще свойства, это минимальный набор
@@ -52,11 +57,13 @@ module.exports = {
         rules: [ //различные загрузчики
           { //css
             test: /\.s[ac]ss$/i,  //scss и sass
-            use: [
-              MiniCssExtractPlugin.loader, //важен порядок, подгружает снизу вверх
-              "css-loader",
-              "sass-loader",
-            ],
+            use: [{
+              loader: MiniCssExtractPlugin.loader //важен порядок, подгружает снизу вверх //hot reload возможно не работает с этим лоадером // нет, не работает с browserlist
+            },{
+              loader: "css-loader"
+            },{
+              loader: "sass-loader"
+            }]
           },
           { //babel, для реализации совместимости на старых версиях браузера
             test: /\.m?js$/,
